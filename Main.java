@@ -1,23 +1,80 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        File file = new File(args[0]);
-        try {
-            BufferedImage image = ImageIO.read(file);
-//            int[][] result = imageToIntArray(image);
-            imageToByteArray(file);
-        } catch (IOException e) {
-            System.err.println("Cannot read the file.");
+    public static void main(String[] args) throws IOException {
+        int     i, j;
+        FileInputStream inFile = new FileInputStream(args[0]);
+        BufferedImage inImg = ImageIO.read(inFile);
+        int width = inImg.getWidth();
+        int height = inImg.getHeight();
+        int[] output = new int[width*height];
+        int[] pixels = inImg.getRaster().getPixels(0,0,width,height,(int[])null);
+
+        double Gx;
+        double Gy;
+        double G;
+
+        for(i = 0 ; i < width ; i++ )
+        {
+            for(j = 0 ; j < height ; j++ )
+            {
+                if (i==0 || i==width-1 || j==0 || j==height-1)
+                    G = 0; // Image boundary cleared
+                else{
+                    Gx = pixels[(i+1)*height + j-1] + 2*pixels[(i+1)*height +j] + pixels[(i+1)*height +j+1] -
+                            pixels[(i-1)*height +j-1] - 2*pixels[(i-1)*height+j] - pixels[(i-1)*height+j+1];
+                    Gy = pixels[(i-1)*height+j+1] + 2*pixels[i*height +j+1] + pixels[(i+1)*height+j+1] -
+                            pixels[(i-1)*height+j-1] - 2*pixels[i*height+j-1] - pixels[(i+1)*height+j-1];
+                    G  = Math.hypot(Gx, Gy);
+                }
+
+                output[i*height+j] = (int)G;
+            }
         }
+
+
+        BufferedImage outImg = new BufferedImage(width,height,BufferedImage.TYPE_BYTE_GRAY);
+        outImg.getRaster().setPixels(0,0,width,height,output);
+        FileOutputStream outFile = new FileOutputStream("result.jpg");
+        ImageIO.write(outImg,"JPG",outFile);
+
+        JFrame TheFrame = new JFrame("Result");
+
+        JLabel TheLabel = new JLabel(new ImageIcon(outImg));
+        TheFrame.getContentPane().add(TheLabel);
+
+
+        TheFrame.setSize(width, height);
+
+        TheFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        TheFrame.setVisible(true);
+
+
+
+
+        return;
+
+
+//
+//        File file = new File(args[0]);
+//        try {
+//            BufferedImage image = ImageIO.read(file);
+////            int[][] result = imageToIntArray(image);
+//            imageToByteArray(file);
+//        } catch (IOException e) {
+//            System.err.println("Cannot read the file.");
+//        }
     }
 
     private static int[][] imageToIntArray(BufferedImage image) {

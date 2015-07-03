@@ -3,14 +3,22 @@ import java.io.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        FileInputStream file = new FileInputStream(args[0]);
+        if (args.length < 2) {
+            System.err.println("Missing parameters.");
+            return;
+        }
 
+        FileInputStream file = new FileInputStream(args[1]);
         SobelFilterGrayscale sobelFilterGrayscale = new SobelFilterGrayscale(file);
-        sobelFilterGrayscale.enablePrintChanges();
+
+        if(args[0].equals("--print")) {
+            sobelFilterGrayscale.enablePrintChanges();
+        }
+
         sobelFilterGrayscale.applyFilter();
 
-        if (args.length > 1) {
-            sobelFilterGrayscale.save(args[1]);
+        if (args.length > 2) {
+            sobelFilterGrayscale.save(args[2]);
         }
 
         sobelFilterGrayscale.show();

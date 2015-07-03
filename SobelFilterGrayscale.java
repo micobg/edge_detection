@@ -10,30 +10,36 @@ import java.io.IOException;
 public class SobelFilterGrayscale {
 
     /**
+     * Set to true if want to print every pixel change.
+     */
+    private boolean printChanges = false;
+
+    /**
      * Parameters of the incoming image.
      */
     private int width;
     private int height;
-    private int[] pixels;
 
+    private int[] pixels;
     /**
      * Keep last iterated column (left) and upper cell to be able to write result in the same array.
      */
     private int upperCell = 0;
-    private int[][] leftColumn;
 
+    private int[][] leftColumn;
     /**
      * We should keep left column for calculations and build new left column (for next iteration) at the same time.
      */
     private int leftColumnRead = 0;
-    private int leftColumnWrite = 1;
 
+    private int leftColumnWrite = 1;
     private BufferedImage outputImage = null;
 
     /**
      * Open given image.
      *
      * @param file path to file
+     *             
      * @throws IOException on reading file exception
      */
     SobelFilterGrayscale(FileInputStream file) throws IOException {
@@ -64,6 +70,9 @@ public class SobelFilterGrayscale {
                 upperCell = pixels[j * width + i];
                 leftColumn[leftColumnWrite][j] = pixels[j * width + i];
 
+                // log changes
+                printChange(i, j, pixels[j * width + i], G);
+
                 pixels[j * width + i] = G;
             }
 
@@ -77,6 +86,7 @@ public class SobelFilterGrayscale {
      * Save the image to given path.
      *
      * @param outputFileName path t save
+     *
      * @throws IOException if can not save the file to given path
      */
     public void save(String outputFileName) throws IOException {
@@ -109,6 +119,13 @@ public class SobelFilterGrayscale {
     }
 
     /**
+     * Enable printing of changes on pixels values.
+     */
+    public void enablePrintChanges() {
+        printChanges = true;
+    }
+
+    /**
      * Apply Sobel operator for one pixel of picture.
      *
      * @param i width coordinates of the pixel
@@ -135,4 +152,17 @@ public class SobelFilterGrayscale {
         outputImage.getRaster().setPixels(0, 0, width, height, pixels);
     }
 
+    /**
+     * Print pixel value change if printing is enabled.
+     *
+     * @param i x coordinate of the pixel
+     * @param j y coordinate of the pixel
+     * @param oldValue old value of the pixel
+     * @param newValue new value of the pixel
+     */
+    private void printChange(int i, int j, int oldValue, int newValue) {
+        if (printChanges) {
+            System.out.println("Pixel (" + i + ", " + j + ") changed from " + oldValue + " to " + newValue + ".");
+        }
+    }
 }

@@ -6,6 +6,7 @@ public class Main {
         FileInputStream file = new FileInputStream(args[0]);
 
         SobelFilterGrayscale sobelFilterGrayscale = new SobelFilterGrayscale(file);
+        sobelFilterGrayscale.enablePrintChanges();
         sobelFilterGrayscale.applyFilter();
 
         if (args.length > 1) {

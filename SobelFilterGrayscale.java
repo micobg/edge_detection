@@ -141,7 +141,7 @@ public class SobelFilterGrayscale {
             leftColumn[leftColumnRead][j + 1] + 2 * pixels[(j + 1) * width + i] + pixels[(j + 1) * width + i + 1] -
             leftColumn[leftColumnRead][j-1] - 2 * upperCell - pixels[(j - 1) * width + i + 1];
 
-        return (int)Math.hypot(Gx, Gy);
+        return (int)(Math.hypot(Gx, Gy)/8);
     }
 
     /**

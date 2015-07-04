@@ -10,11 +10,6 @@ import java.io.IOException;
 public class SobelFilterGrayscale {
 
     /**
-     * Set to true if want to print every pixel change.
-     */
-    private boolean printChanges = false;
-
-    /**
      * Parameters of the incoming image.
      */
     private int width;
@@ -70,9 +65,6 @@ public class SobelFilterGrayscale {
                 upperCell = pixels[j * width + i];
                 leftColumn[leftColumnWrite][j] = pixels[j * width + i];
 
-                // log changes
-                printChange(i, j, pixels[j * width + i], G);
-
                 pixels[j * width + i] = G;
             }
 
@@ -119,13 +111,6 @@ public class SobelFilterGrayscale {
     }
 
     /**
-     * Enable printing of changes on pixels values.
-     */
-    public void enablePrintChanges() {
-        printChanges = true;
-    }
-
-    /**
      * Apply Sobel operator for one pixel of picture.
      *
      * @param i width coordinates of the pixel
@@ -152,17 +137,4 @@ public class SobelFilterGrayscale {
         outputImage.getRaster().setPixels(0, 0, width, height, pixels);
     }
 
-    /**
-     * Print pixel value change if printing is enabled.
-     *
-     * @param i x coordinate of the pixel
-     * @param j y coordinate of the pixel
-     * @param oldValue old value of the pixel
-     * @param newValue new value of the pixel
-     */
-    private void printChange(int i, int j, int oldValue, int newValue) {
-        if (printChanges) {
-            System.out.println("Pixel (" + i + ", " + j + ") changed from " + oldValue + " to " + newValue + ".");
-        }
-    }
 }

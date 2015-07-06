@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class SobelFilterGrayscale {
+public class SobelFilterGrayscale implements EdgeDetector {
 
     /**
      * Parameters of the incoming image.
